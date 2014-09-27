@@ -2,7 +2,7 @@
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("org" . "http://orgmode.org/elpa/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")))
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
 (require 'cl)
@@ -10,13 +10,16 @@
 (defvar packages-list
   '(evil
     evil-leader
+    evil-matchit
     color-theme
     color-theme-solarized
     git-commit-mode
     helm
     helm-projectile
     grizzl
-    iflipb)
+    iflipb
+    smooth-scrolling
+    powerline-evil)
   "List of packages needs to be installed at launch")
 
 (defun has-package-not-installed ()
@@ -34,8 +37,9 @@
     (when (not (package-installed-p p))
       (package-install p))))
 
-; Make yes-or-no questions answerable with 'y' or 'n'
 (fset 'yes-or-no-p 'y-or-n-p)
+
+(set-default 'truncate-lines t)
 
 (setq evil-leader/in-all-states 1)
 (global-evil-leader-mode)
@@ -62,7 +66,28 @@
 
 ; Buffer nagiation keys
 (evil-leader/set-key
- "r" 'projectile-recentf
- "t" 'projectile-find-file
- "y" 'projectile-switch-to-buffer
- "/" 'iflipb-next-buffer)
+  "r" 'projectile-recentf
+  "t" 'projectile-find-file
+  "y" 'projectile-switch-to-buffer
+  "/" 'iflipb-next-buffer
+  "w" 'kill-this-buffer)
+
+; Window navigation keys
+(evil-leader/set-key
+  "v" 'evil-window-vsplit
+  "s" 'evil-window-split
+  "q" 'delete-window
+  "h" 'evil-window-left
+  "j" 'evil-window-down
+  "k" 'evil-window-up
+  "l" 'evil-window-right
+  "H" 'evil-window-move-far-left
+  "J" 'evil-window-move-very-bottom
+  "K" 'evil-window-move-very-top
+  "L" 'evil-window-move-far-right)
+
+(require 'powerline)
+(powerline-evil-vim-color-theme)
+(display-time-mode t)
+
+(show-paren-mode t)
