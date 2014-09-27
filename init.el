@@ -8,7 +8,10 @@
 (require 'cl)
 ;; Guarantee all packages are installed on start
 (defvar packages-list
-  '(evil)
+  '(evil
+    color-theme
+    color-theme-solarized
+    git-commit-mode)
   "List of packages needs to be installed at launch")
 
 (defun has-package-not-installed ()
@@ -31,3 +34,6 @@
 
 (require 'evil)
 (evil-mode 1)
+
+(require 'color-theme-solarized)
+(color-theme-solarized-dark)
