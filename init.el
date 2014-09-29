@@ -19,7 +19,8 @@
     grizzl
     iflipb
     smooth-scrolling
-    powerline-evil)
+    powerline-evil
+    neotree)
   "List of packages needs to be installed at launch")
 
 (defun has-package-not-installed ()
@@ -91,3 +92,9 @@
 (display-time-mode t)
 
 (show-paren-mode t)
+
+; Project drawer
+(require 'neotree)
+(evil-leader/set-key
+  "p" 'neotree-toggle
+  "P" 'neotree-find)
