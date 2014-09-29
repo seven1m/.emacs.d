@@ -67,9 +67,9 @@
 
 ; Buffer nagiation keys
 (evil-leader/set-key
-  "r" 'projectile-recentf
+  "r" 'helm-recentf
   "t" 'projectile-find-file
-  "y" 'projectile-switch-to-buffer
+  "y" 'switch-to-buffer
   "/" 'iflipb-next-buffer
   "w" 'kill-this-buffer)
 
@@ -93,8 +93,42 @@
 
 (show-paren-mode t)
 
+; place backup and auto-save files in my ~/tmp directory
+(defvar user-temporary-file-directory "~/tmp")
+(setq backup-by-copying t
+      backup-directory-alist
+        '(("." . "~/tmp"))
+      delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
+
+; remember cursor position when re-opening a file
+(setq save-place-file "~/tmp/emacs-saveplace")
+(setq-default save-place t)
+(require 'saveplace)
+
 ; Project drawer
 (require 'neotree)
 (evil-leader/set-key
   "p" 'neotree-toggle
   "P" 'neotree-find)
+
+(global-set-key (kbd "C-r") 'undo-tree-redo)
+
+(add-to-list 'load-path "~/.emacs.d/lib")
+(require 'moz)
+
+(defun moz-firefox-reload ()
+  "Reload Firefox by sending command through MozRepl"
+  (interactive)
+  (comint-send-string (inferior-moz-process) "BrowserReload();"))
+
+(evil-leader/set-key
+  "fr" 'moz-firefox-reload)
+
+(setq-default
+  tab-width 2
+  indent-tabs-mode nil)
+
+(define-key global-map (kbd "RET") 'newline-and-indent)
