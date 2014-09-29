@@ -12,3 +12,7 @@ I was inspired by this post by Juanjo Alvarez: http://juanjoalvarez.net/es/detai
 4. [Emacs can see colors now](https://github.com/seven1m/.emacs.d/commit/d94b51df412581950dfabdf3e47e5ec09bc68c8e)
 5. [Open and navigate between buffers](https://github.com/seven1m/.emacs.d/commit/5bf24c29f7a29cea368da035b721e84a96244b94)
 6. [Open and navigate between windows](https://github.com/seven1m/.emacs.d/commit/90aff292f68ae5547d0495e9a233e99b23020f5e)
+
+## Sun, Sep 28, 2014
+
+1. [Add project drawer for directory tree navigation](https://github.com/seven1m/.emacs.d/commit/f5528f4e90a92293c6a66bc74c285905d0403d56)
