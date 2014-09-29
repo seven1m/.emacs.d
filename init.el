@@ -49,11 +49,12 @@
 (require 'evil)
 (evil-mode 1)
 
-(require 'color-theme-solarized)
-(color-theme-solarized-dark)
-
 (require 'helm-config)
 (helm-mode 1)
+
+(require 'color-theme-solarized)
+(color-theme-solarized-dark)
+(set-face-attribute 'helm-selection nil :background "#441100")
 
 (projectile-global-mode)
 (setq projectile-require-project-root nil)
@@ -64,11 +65,12 @@
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 100)
+(setq helm-split-window-default-side 'above)
 
 ; Buffer nagiation keys
 (evil-leader/set-key
   "r" 'helm-recentf
-  "t" 'projectile-find-file
+  "t" 'helm-projectile
   "y" 'switch-to-buffer
   "/" 'iflipb-next-buffer
   "w" 'kill-this-buffer)
