@@ -44,6 +44,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (set-default 'truncate-lines t)
+(setq-default evil-cross-lines t)
 
 (setq evil-leader/in-all-states 1)
 (global-evil-leader-mode)
