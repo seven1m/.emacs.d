@@ -102,6 +102,10 @@
   "K" 'evil-window-move-very-top
   "L" 'evil-window-move-far-right)
 
+; Paste from kill ring
+(evil-leader/set-key
+  ";" 'helm-show-kill-ring)
+
 (require 'powerline)
 (powerline-evil-vim-color-theme)
 (display-time-mode t)
