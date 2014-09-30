@@ -133,8 +133,7 @@
   "p" 'neotree-toggle
   "P" 'neotree-find)
 
-(global-set-key (kbd "C-r") 'undo-tree-redo)
-
+; Firefox Reload via MozRepl
 (add-to-list 'load-path "~/.emacs.d/lib")
 (require 'moz)
 
@@ -165,3 +164,13 @@
   (defun track-mouse (e))
   (setq mouse-sel-mode t)
   )
+
+; Undo/Redo
+(require 'undo-tree)
+(global-undo-tree-mode)
+(setq undo-tree-auto-save-history t)
+(setq undo-tree-history-directory-alist '((".*" . "~/tmp/emacs-undo")))
+
+(evil-leader/set-key
+  "U" 'undo-tree-visualize)
+(global-set-key (kbd "C-r") 'undo-tree-redo)
