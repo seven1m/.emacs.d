@@ -75,11 +75,24 @@
   "/" 'iflipb-next-buffer
   "w" 'kill-this-buffer)
 
+(defun my-window-split ()
+  "Split the window horizontally and put cursor in the bottom one"
+  (interactive)
+  (evil-window-split)
+  (evil-window-down 1))
+
+(defun my-window-vsplit ()
+  "Split the window vertically and put cursor in the right one"
+  (interactive)
+  (evil-window-vsplit)
+  (evil-window-right 1))
+
 ; Window navigation keys
 (evil-leader/set-key
-  "v" 'evil-window-vsplit
-  "s" 'evil-window-split
+  "v" 'my-window-vsplit
+  "s" 'my-window-split
   "q" 'delete-window
+  "o" 'delete-other-windows
   "h" 'evil-window-left
   "j" 'evil-window-down
   "k" 'evil-window-up
