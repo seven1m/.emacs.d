@@ -20,7 +20,10 @@
     iflipb
     smooth-scrolling
     powerline-evil
-    neotree)
+    neotree
+    web-mode
+    haml-mode
+    coffee-mode)
   "List of packages needs to be installed at launch")
 
 (defun has-package-not-installed ()
@@ -145,13 +148,23 @@
 (evil-leader/set-key
   "fr" 'moz-firefox-reload)
 
+; Two Spaces, No Tabs
 (setq-default
   tab-width 2
-  indent-tabs-mode nil)
+  indent-tabs-mode nil
+  evil-shift-width 2)
 
+; Auto Indent
 (define-key global-map (kbd "RET") 'newline-and-indent)
 
-;; Enable mouse support
+; CJSX as CoffeeScript
+(add-to-list 'auto-mode-alist '("\\.cjsx\\'" . coffee-mode))
+
+; ERB
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+
+; Enable mouse support
 (unless window-system
   (require 'mouse)
   (xterm-mouse-mode t)
