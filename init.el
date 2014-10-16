@@ -11,6 +11,8 @@
   '(evil
     evil-leader
     evil-matchit
+    evil-nerd-commenter
+    evil-surround
     color-theme
     color-theme-solarized
     git-commit-mode
@@ -20,10 +22,14 @@
     iflipb
     smooth-scrolling
     powerline-evil
-    neotree
     web-mode
     haml-mode
-    coffee-mode)
+    slim-mode
+    coffee-mode
+    magit
+    diminish
+    editorconfig
+    layout-restore)
   "List of packages needs to be installed at launch")
 
 (defun has-package-not-installed ()
@@ -42,6 +48,7 @@
       (package-install p))))
 
 (fset 'yes-or-no-p 'y-or-n-p)
+(setq-default show-trailing-whitespace t)
 
 (set-default 'truncate-lines t)
 (setq-default evil-cross-lines t)
@@ -49,6 +56,8 @@
 (setq evil-leader/in-all-states 1)
 (global-evil-leader-mode)
 (evil-leader/set-leader ",")
+
+(global-evil-surround-mode 1)
 
 (require 'evil)
 (evil-mode 1)
@@ -71,9 +80,28 @@
 (setq recentf-max-menu-items 100)
 (setq helm-split-window-default-side 'above)
 
+(require 'helm-projectile)
+(defun helm-projectile-recentf (&optional arg)
+  "Use projectile with Helm instead of ido.
+With a prefix ARG invalidates the cache first.
+If invoked outside of a project, displays a list of known projects to jump."
+  (interactive "P")
+  (if (projectile-project-p)
+      (projectile-maybe-invalidate-cache arg))
+  (let ((helm-ff-transformer-show-only-basename nil)
+        (src (if (projectile-project-p)
+                 '(helm-source-projectile-recentf-list)
+               helm-source-projectile-projects)))
+    (helm :sources src
+          :buffer "*helm projectile*"
+          :prompt (projectile-prepend-project-name (if (projectile-project-p)
+                                                       "pattern: "
+                                                       "Switch to project: ")))))
+
 ; Buffer nagiation keys
 (evil-leader/set-key
-  "r" 'helm-recentf
+  "r" 'helm-projectile-recentf
+  "R" 'helm-recentf
   "t" 'helm-projectile
   "y" 'switch-to-buffer
   "/" 'iflipb-next-buffer
@@ -91,12 +119,27 @@
   (evil-window-vsplit)
   (evil-window-right 1))
 
+(require 'layout-restore)
+(global-set-key [?\C-c ?l] 'layout-save-current)
+(global-set-key [?\C-c ?\C-l ?\C-l] 'layout-restore)
+
+(defun zoom-win ()
+  "Show only the current window, or restore previous window layout."
+  (interactive)
+  (if layout-configuration-alist
+    (progn
+      (layout-restore)
+      (layout-delete-current))
+    (progn
+      (layout-save-current)
+      (delete-other-windows))))
+
 ; Window navigation keys
 (evil-leader/set-key
   "v" 'my-window-vsplit
   "s" 'my-window-split
   "q" 'delete-window
-  "o" 'delete-other-windows
+  "o" 'zoom-win
   "h" 'evil-window-left
   "j" 'evil-window-down
   "k" 'evil-window-up
@@ -110,9 +153,18 @@
 (evil-leader/set-key
   ";" 'helm-show-kill-ring)
 
+; Git keys
+(evil-leader/set-key
+  "gs" 'magit-status
+  "gb" 'vc-annotate)
+
 (require 'powerline)
 (powerline-evil-vim-color-theme)
-(display-time-mode t)
+
+(require 'diminish)
+(eval-after-load "undo-tree" '(diminish 'undo-tree-mode))
+(eval-after-load "projectile" '(diminish 'projectile-mode))
+(eval-after-load "helm" '(diminish 'helm-mode))
 
 (show-paren-mode t)
 
@@ -126,19 +178,22 @@
       kept-old-versions 2
       version-control t)
 
+; no lock files please (I live dangerously)
+(setq create-lockfiles nil)
+
 ; remember cursor position when re-opening a file
 (setq save-place-file "~/tmp/emacs-saveplace")
 (setq-default save-place t)
 (require 'saveplace)
 
-; Project drawer
-(require 'neotree)
+(add-to-list 'load-path "~/.emacs.d/lib")
+
+; directory tree view
 (evil-leader/set-key
-  "p" 'neotree-toggle
-  "P" 'neotree-find)
+  "p" 'projectile-dired
+  "P" 'dired-jump)
 
 ; Firefox Reload via MozRepl
-(add-to-list 'load-path "~/.emacs.d/lib")
 (require 'moz)
 
 (defun moz-firefox-reload ()
@@ -156,14 +211,23 @@
   evil-shift-width 2)
 
 ; Auto Indent
-(define-key global-map (kbd "RET") 'newline-and-indent)
-
-; CJSX as CoffeeScript
-(add-to-list 'auto-mode-alist '("\\.cjsx\\'" . coffee-mode))
+(defun enable-paste-mode ()
+  "Disable auto indent"
+  (interactive)
+  (define-key global-map (kbd "RET") 'newline))
+(defun disable-paste-mode ()
+  "Reenable auto indent"
+  (interactive)
+  (define-key global-map (kbd "RET") 'newline-and-indent))
+(disable-paste-mode)
 
 ; ERB
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+
+; CJSX as CoffeeScript
+(add-to-list 'auto-mode-alist '("\\.cjsx\\'" . coffee-mode))
+(add-to-list 'auto-mode-alist '("\\.coffee\\.erb\\'" . coffee-mode))
 
 ; Enable mouse support
 (unless window-system
@@ -186,5 +250,31 @@
 (setq undo-tree-history-directory-alist '((".*" . "~/tmp/emacs-undo")))
 
 (evil-leader/set-key
-  "U" 'undo-tree-visualize)
+  "u" 'undo-tree-visualize)
 (global-set-key (kbd "C-r") 'undo-tree-redo)
+
+(add-hook 'ruby-mode-hook
+  (lambda () (modify-syntax-entry ?_ "w" ruby-mode-syntax-table)))
+
+(add-hook 'emacs-lisp-mode-hook
+  (lambda () (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)))
+
+(global-set-key (kbd "C-k") (lambda () (interactive))) ; no-op
+
+; Nerd Comments
+(evilnc-default-hotkeys)
+
+(setq initial-major-mode (quote text-mode))
+
+(defun new-empty-buffer ()
+  "Open a new empty buffer."
+  (interactive)
+  (let ((buf (generate-new-buffer "untitled")))
+    (switch-to-buffer buf)
+    (funcall (and initial-major-mode))
+    (setq buffer-offer-save t)))
+
+(evil-leader/set-key
+  "n" 'new-empty-buffer)
+
+(setq inhibit-startup-screen t)
