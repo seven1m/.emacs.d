@@ -30,3 +30,7 @@ I was inspired by this post by Juanjo Alvarez: http://juanjoalvarez.net/es/detai
 ## Tue, Sep 30, 2014
 
 1. [Allow cursor to jump to wrap](https://github.com/seven1m/.emacs.d/commit/4aa25977a8628857cae7f4e5efd1562598062e1d)
+
+## Wed, Oct 15, 2014
+
+1. [Small tweaks, much of the last 20% bridged from vim](https://github.com/seven1m/.emacs.d/commit/8b810cb75e5208c55fb0430f0261a0847632d3ab)
